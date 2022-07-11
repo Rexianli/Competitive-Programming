@@ -5,7 +5,31 @@ public class factorymachines {
     public static void main(String[] args) throws IOException {
         Reader in = new Reader();
         PrintWriter out = new PrintWriter(System.out);
-
+        int n = in.nextInt();
+        int t = in.nextInt();
+        int[] arr = new int[n];
+        for(int i = 0; i < n; i++) {
+            arr[i] = in.nextInt();
+        }
+        long low = 0;
+        long high = Long.MAX_VALUE;
+        long answer = 0;
+        While:
+        while(low <= high) {
+            out.println(low + " " + high);
+            long middle = (low + high) / 2;
+            long curTotal = 0;
+            for(int machine : arr) {
+                curTotal += middle / machine;
+                if(curTotal >= t) {
+                    answer = middle;
+                    high = middle - 1;
+                    continue While;
+                }
+            }
+            low = middle + 1;
+        }
+        out.println(answer);
         in.close();
         out.close();
     }
