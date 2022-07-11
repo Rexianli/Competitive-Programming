@@ -1,28 +1,48 @@
 import java.io.*;
 import java.util.*;
+import java.util.stream.IntStream;
 
-public class moviefestival2 {
+public class arraydivision {
     public static void main(String[] args) throws IOException {
         Reader in = new Reader();
         PrintWriter out = new PrintWriter(System.out);
         int n = in.nextInt();
         int k = in.nextInt();
-        Movie[] movieArr = new Movie[n];
+        int[] arr = new int[n];
         for(int i = 0; i < n; i++) {
-            int s = in.nextInt(); int e = in.nextInt();
-            movieArr[i] = new Movie(s, e);
+            arr[i] = in.nextInt();
         }
-
+        Arrays.sort(arr);
+        int minVal = arr[n - 1];
+        int maxVal = IntStream.of(arr).sum();
+        int answer = 0;
+        while(minVal <= maxVal) {
+            int middle = (minVal + maxVal) / 2;
+            if(check(n, k, arr, middle)) {
+                answer = middle;
+                maxVal = middle - 1;
+            } else {
+                minVal = middle + 1;
+            }
+        }
+        out.println(answer);
         in.close();
         out.close();
     }
 
-    static class Movie {
-        int s, e;
-        public Movie(int s, int e) {
-            this.s = s;
-            this.e = e;
+    static Boolean check(int n, int k, int[] arr, int middle) {
+        int count = 0;
+        int sum = 0;
+        for(int i = 0; i < n; i++) {
+            if(arr[i] > middle) return false;
+            sum += arr[i];
+            if(sum > middle) {
+                count++;
+                sum = arr[i];
+            }
         }
+        count++;
+        return sum <= k;
     }
 
     static class Reader {

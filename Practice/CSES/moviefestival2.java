@@ -1,38 +1,55 @@
 import java.io.*;
 import java.util.*;
 
-public class towers {
-    static TreeMap<Integer, Integer> towers = new TreeMap<Integer, Integer>();
+public class moviefestival2 {
+    static TreeMap<Integer, Integer> multiset = new TreeMap<>();
     public static void main(String[] args) throws IOException {
         Reader in = new Reader();
         PrintWriter out = new PrintWriter(System.out);
         int n = in.nextInt();
-        add(in.nextInt());
-        for(int i = 1; i < n; i++) {
-            int cur = in.nextInt();
-            if(cur < towers.lastKey()) {
-                remove(towers.higherKey(cur));
-            }
-            add(cur);
+        int k = in.nextInt();
+        Movie[] movieArr = new Movie[n];
+        for(int i = 0; i < n; i++) {
+            int s = in.nextInt(); int e = in.nextInt();
+            movieArr[i] = new Movie(s, e);
         }
-        out.println(towers.values().stream().mapToInt(i -> i).sum());
+        Arrays.sort(movieArr, Comparator.comparingInt(x -> x.e));
+        multiset.put(0, k);
+        int movies = 0;
+        for(Movie movie : movieArr) {
+            Integer available = multiset.floorKey(movie.s);
+            if(available != null) {
+                movies++;
+                remove(available);
+                add(movie.e);
+            }
+        }
+        out.println(movies);
         in.close();
         out.close();
     }
 
+    static class Movie {
+        int s, e;
+        public Movie(int s, int e) {
+            this.s = s;
+            this.e = e;
+        }
+    }
+
     static void add(int x) {
-        if(towers.containsKey(x)){
-        towers.put(x, towers.get(x) + 1);
+        if(multiset.containsKey(x)){
+            multiset.put(x, multiset.get(x) + 1);
         } else {
-            towers.put(x, 1);
+            multiset.put(x, 1);
         }
     }
 
     static void remove(int x) {
-        if(towers.get(x) == 1) {
-            towers.remove(x);
+        if(multiset.get(x) == 1) {
+            multiset.remove(x);
         } else {
-            towers.put(x, towers.get(x) - 1);
+            multiset.put(x, multiset.get(x) - 1);
         }
     }
 
@@ -49,7 +66,8 @@ public class towers {
         }
 
         public Reader(String file_name) throws IOException {
-            din = new DataInputStream(new FileInputStream(file_name));
+            din = new DataInputStream(
+                    new FileInputStream(file_name));
             buffer = new byte[BUFFER_SIZE];
             bufferPointer = bytesRead = 0;
         }
@@ -57,9 +75,9 @@ public class towers {
         public String readLine() throws IOException {
             byte[] buf = new byte[64];
             int cnt = 0, c;
-            while((c = read()) != -1) {
-                if(c == '\n') {
-                    if(cnt != 0) {
+            while ((c = read()) != -1) {
+                if (c == '\n') {
+                    if (cnt != 0) {
                         break;
                     } else {
                         continue;
@@ -73,17 +91,17 @@ public class towers {
         public int nextInt() throws IOException {
             int ret = 0;
             byte c = read();
-            while(c <= ' ') {
+            while (c <= ' ') {
                 c = read();
             }
             boolean neg = (c == '-');
-            if(neg)
+            if (neg)
                 c = read();
             do {
                 ret = ret * 10 + c - '0';
-            } while((c = read()) >= '0' && c <= '9');
+            } while ((c = read()) >= '0' && c <= '9');
 
-            if(neg)
+            if (neg)
                 return -ret;
             return ret;
         }
@@ -91,15 +109,15 @@ public class towers {
         public long nextLong() throws IOException {
             long ret = 0;
             byte c = read();
-            while(c <= ' ')
+            while (c <= ' ')
                 c = read();
             boolean neg = (c == '-');
-            if(neg)
+            if (neg)
                 c = read();
             do {
                 ret = ret * 10 + c - '0';
-            } while((c = read()) >= '0' && c <= '9');
-            if(neg)
+            } while ((c = read()) >= '0' && c <= '9');
+            if (neg)
                 return -ret;
             return ret;
         }
@@ -107,20 +125,20 @@ public class towers {
         public double nextDouble() throws IOException {
             double ret = 0, div = 1;
             byte c = read();
-            while(c <= ' ')
+            while (c <= ' ')
                 c = read();
             boolean neg = (c == '-');
-            if(neg)
+            if (neg)
                 c = read();
             do {
                 ret = ret * 10 + c - '0';
-            } while((c = read()) >= '0' && c <= '9');
-            if(c == '.') {
-                while((c = read()) >= '0' && c <= '9') {
+            } while ((c = read()) >= '0' && c <= '9');
+            if (c == '.') {
+                while ((c = read()) >= '0' && c <= '9') {
                     ret += (c - '0') / (div *= 10);
                 }
             }
-            if(neg)
+            if (neg)
                 return -ret;
             return ret;
         }
@@ -128,18 +146,18 @@ public class towers {
         private void fillBuffer() throws IOException {
             bytesRead = din.read(buffer, bufferPointer = 0,
                     BUFFER_SIZE);
-            if(bytesRead == -1)
+            if (bytesRead == -1)
                 buffer[0] = -1;
         }
 
         private byte read() throws IOException {
-            if(bufferPointer == bytesRead)
+            if (bufferPointer == bytesRead)
                 fillBuffer();
             return buffer[bufferPointer++];
         }
 
         public void close() throws IOException {
-            if(din == null)
+            if (din == null)
                 return;
             din.close();
         }
