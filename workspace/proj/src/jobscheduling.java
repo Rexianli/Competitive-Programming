@@ -1,11 +1,18 @@
 import java.io.*;
 import java.util.*;
 
-public class Main {
+public class jobscheduling {
     public static void main(String[] args) throws IOException {
         Reader in = new Reader();
         PrintWriter out = new PrintWriter(System.out);
-
+        int n = in.nextInt();
+        int d = in.nextInt();
+        int m = in.nextInt();
+        int[] arr = new int[m];
+        for(int i = 0; i < m; i++) {
+            arr[i] = in.nextInt();
+        }
+        out.println(Arrays.toString(arr));
         in.close();
         out.close();
     }
