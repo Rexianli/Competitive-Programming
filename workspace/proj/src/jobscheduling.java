@@ -8,13 +8,47 @@ public class jobscheduling {
         int n = in.nextInt();
         int d = in.nextInt();
         int m = in.nextInt();
-        int[] arr = new int[m];
+        Pair[] arr = new Pair[m];
         for(int i = 0; i < m; i++) {
-            arr[i] = in.nextInt();
+            arr[i] = new Pair(i + 1, in.nextInt());
         }
-        out.println(Arrays.toString(arr));
+        Arrays.sort(arr, Comparator.comparingInt(x -> x.day));
+//        for(Pair pairs : arr) {
+//            out.println(pairs.request + " " + pairs.day);
+//        }
+        int low = 0;
+        int high = Integer.MAX_VALUE;
+        int answer = 0;
+        List<List<Integer>> ansList;
+        while(low <= high) {
+//            out.println(low + " " + high);
+            int middle = (low + high) / 2;
+            List<List<Integer>> list = new ArrayList<>();
+            if(m / middle > n) {
+                low = middle + 1;
+                continue;
+            }
+            for(int i = 0; i < m; i += middle) {
+                list.add(new ArrayList<>());
+                for(int j = i; j < i + middle; j++) {
+                    list.get(i).add(arr[j].request);
+                    if(arr[j].day + d >= i / middle + d) {
+
+                    }
+                }
+            }
+        }
+//        out.println(Arrays.toString(arr));
         in.close();
         out.close();
+    }
+
+    static class Pair {
+        int request, day;
+        Pair(int request, int day) {
+            this.request = request;
+            this.day = day;
+        }
     }
 
     static class Reader {

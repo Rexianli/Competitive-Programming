@@ -16,7 +16,7 @@ public class factorymachines {
         long answer = 0;
         While:
         while(low <= high) {
-            out.println(low + " " + high);
+//            out.println(low + " " + high);
             long middle = (low + high) / 2;
             long curTotal = 0;
             for(int machine : arr) {
