@@ -1,13 +1,53 @@
 import java.io.*;
+import java.math.BigDecimal;
 import java.util.*;
 
-public class Main {
+public class themeetingplacecannotbechanged {
     public static void main(String[] args) throws IOException {
         Reader in = new Reader();
         PrintWriter out = new PrintWriter(System.out);
-        
+//        traveling north will decrease coordinate value, vice versa applies
+        int n = in.nextInt();
+        Friend[] friendArr = new Friend[n];
+        for(int i = 0; i < n; i++) {
+            friendArr[i] = new Friend(in.nextInt(), 0);
+        }
+        for(int i = 0; i < n; i++) {
+            friendArr[i].speed = in.nextInt();
+        }
+        BigDecimal low = new BigDecimal(0);
+        BigDecimal high = new BigDecimal(Integer.MAX_VALUE);
+//        add more zeros to 0.0000001 if more accuracy is needed
+        while((high.subtract(low)).compareTo(BigDecimal.valueOf(0.0000001)) > 0) {
+//            out.println(low + " " + high);
+            BigDecimal middle = low.add(high).divide(BigDecimal.valueOf(2));
+            BigDecimal left = new BigDecimal(0);
+            BigDecimal right = new BigDecimal(Integer.MAX_VALUE);
+            for(int i = 0; i < n; i++) {
+//                limit the BigDecimal to 8 digits for memory conservation?
+                BigDecimal lower = BigDecimal.valueOf(friendArr[i].location).subtract(BigDecimal.valueOf(friendArr[i].speed).multiply(middle));
+                BigDecimal higher = BigDecimal.valueOf(friendArr[i].location).add(BigDecimal.valueOf(friendArr[i].speed).multiply(middle));
+                if(lower.compareTo(left) > 0) left = lower;
+                if(higher.compareTo(right) < 0) right = higher;
+            }
+            if(left.compareTo(right) < 1) {
+                high = middle;
+            } else {
+                low = middle;
+            }
+        }
+//        out.println(low + " " + high);
+        out.println(low.add(high).divide(BigDecimal.valueOf(2)));
         in.close();
         out.close();
+    }
+
+    static class Friend {
+        int location, speed;
+        Friend(int location, int speed) {
+            this.location = location;
+            this.speed = speed;
+        }
     }
 
     static class Reader {
