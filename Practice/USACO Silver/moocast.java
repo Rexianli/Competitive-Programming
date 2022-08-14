@@ -1,13 +1,62 @@
 import java.io.*;
 import java.util.*;
 
-public class Main {
+public class moocast {
+    static ArrayList<Integer>[] adj;
+    static boolean[] visited;
     public static void main(String[] args) throws IOException {
-        Reader in = new Reader();
-        PrintWriter out = new PrintWriter(System.out);
-
+        Reader in = new Reader("moocast.in");
+        PrintWriter out = new PrintWriter("moocast.out");
+        int n = in.nextInt();
+        adj = new ArrayList[n];
+        visited = new boolean[n];
+        for(int i = 0; i < n; i++) adj[i] = new ArrayList<Integer>();
+        Cow[] cowArr = new Cow[n];
+        for(int i = 0; i < n; i++) {
+            cowArr[i] = new Cow(in.nextInt(), in.nextInt(), in.nextInt(), i);
+        }
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                if(i == j) continue;
+                double dist = Math.sqrt(Math.pow(cowArr[i].x - cowArr[j].x, 2) + Math.pow(cowArr[i].y - cowArr[j].y, 2));
+                if(dist <= cowArr[i].p) adj[cowArr[i].id].add(cowArr[j].id);
+            }
+        }
+//        for(ArrayList<Integer> arr : adj) {
+//            out.println(arr);
+//        }
+        int maxCount = 0;
+        for(int i = 0; i < n; i++) {
+            Arrays.fill(visited, false);
+            int count = 0;
+            dfs(i);
+            for(boolean value : visited) {
+                if(value) count++;
+            }
+            maxCount = Math.max(maxCount, count);
+        }
+        out.println(maxCount);
         in.close();
         out.close();
+    }
+
+    static void dfs(int node) {
+        visited[node] = true;
+        for(int ele : adj[node]) {
+            if(!visited[ele]) {
+                dfs(ele);
+            }
+        }
+    }
+
+    static class Cow {
+        int x, y, p, id;
+        Cow(int x, int y, int p, int id) {
+            this.x = x;
+            this.y = y;
+            this.p = p;
+            this.id = id;
+        }
     }
 
     static class Reader {

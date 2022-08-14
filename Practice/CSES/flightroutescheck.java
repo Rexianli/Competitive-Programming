@@ -1,13 +1,58 @@
 import java.io.*;
 import java.util.*;
 
-public class Main {
+public class flightroutescheck {
+    static ArrayList<Integer>[] adj;
+    static Boolean[] visited;
     public static void main(String[] args) throws IOException {
         Reader in = new Reader();
         PrintWriter out = new PrintWriter(System.out);
-
+        int n = in.nextInt();
+        int m = in.nextInt();
+        adj = new ArrayList[n];
+        visited = new Boolean[n];
+        for(int i = 0; i < n; i++) {
+            adj[i] = new ArrayList<>();
+        }
+        int[][] nums = new int[m][2];
+        for(int i = 0; i < m; i++) {
+            nums[i][0] = in.nextInt() - 1;
+            nums[i][1] = in.nextInt() - 1;
+            adj[nums[i][0]].add(nums[i][1]);
+        }
+        check(in, out, 1);
+        for(int i = 0; i < n; i++) {
+            adj[i] = new ArrayList<>();
+        }
+        for(int i = 0; i < m; i++) {
+            adj[nums[i][1]].add(nums[i][0]);
+        }
+        check(in, out,2);
+        out.println("YES");
         in.close();
         out.close();
+    }
+
+    static void check(Reader in, PrintWriter out, int num) throws IOException {
+        Arrays.fill(visited, false);
+        dfs(0);
+        if(Arrays.asList(visited).contains(false)) {
+            int j = 0;
+            while(visited[j]) j++;
+            out.println("NO");
+            out.println(num == 1 ? 1 + " " + (j + 1) : (j + 1) + " " + 1);
+            in.close();
+            out.close();
+        }
+    }
+
+    static void dfs(int node) {
+        visited[node] = true;
+        for(int ele : adj[node]) {
+            if(!visited[ele]) {
+                dfs(ele);
+            }
+        }
     }
 
     static class Reader {
