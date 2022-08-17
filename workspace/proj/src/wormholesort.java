@@ -1,13 +1,92 @@
 import java.io.*;
 import java.util.*;
+import java.util.stream.IntStream;
 
-public class Main {
+public class wormholesort {
+    static ArrayList<Integer>[] adj;
+    static int[] visited;
     public static void main(String[] args) throws IOException {
-        Reader in = new Reader();
-        PrintWriter out = new PrintWriter(System.out);
-
+        Reader in = new Reader("wormsort.in");
+        PrintWriter out = new PrintWriter("wormsort.out");
+        int n = in.nextInt();
+        int m = in.nextInt();
+        adj = new ArrayList[n];
+        visited = new int[n];
+        int[] locations = new int[n];
+        for(int i = 0; i < n; i++) {
+            adj[i] = new ArrayList<>();
+        }
+        for(int i = 0; i < n; i++) {
+            locations[i] = in.nextInt() - 1;
+        }
+        wormhole[] wormholeArr = new wormhole[m];
+        for(int i = 0; i < m; i++) {
+            int a = in.nextInt() - 1;
+            int b = in.nextInt() - 1;
+            wormholeArr[i] = new wormhole(a, b, in.nextInt(), i);
+        }
+        Arrays.sort(wormholeArr, Comparator.comparingInt(x -> x.w));
+        if(IntStream.range(0, locations.length - 1).noneMatch(i -> locations[i] > locations[i + 1])) {
+            out.println(-1);
+            in.close();
+            out.close();
+        }
+        int low = 0;
+        int high = n - 1;
+        while(low < high) {
+//            out.println(low + " " + high);
+            int middle = (low + high + 1) / 2;
+            for(int i = 0; i < n; i++) {
+                adj[i] = new ArrayList<>();
+            }
+            Arrays.fill(visited, -1);
+            for(int i = middle; i <= high; i++) {
+                adj[wormholeArr[i].a].add(wormholeArr[i].b);
+                adj[wormholeArr[i].b].add(wormholeArr[i].a);
+            }
+            int count = 0;
+            for(int i = 0; i < n; i++) {
+                if(visited[i] < 0) {
+                    dfs(i, count);
+                    count++;
+                }
+            }
+            boolean works = true;
+            for(int i = 0; i < n; i++) {
+                if(visited[i] != visited[locations[i]]) {
+                    works = false;
+                    break;
+                }
+            }
+//            out.println(Arrays.toString(visited));
+            if(works) {
+                low = middle;
+            } else {
+                high = middle - 1;
+            }
+        }
+        out.println(wormholeArr[low].w);
         in.close();
         out.close();
+    }
+
+    static class wormhole {
+        int a, b, w, id;
+        wormhole(int a, int b, int w, int id) {
+            this.a = a;
+            this.b = b;
+            this.w = w;
+            this.id = id;
+        }
+    }
+
+    static void dfs(int node, int count) {
+        visited[node] = count;
+        for(int ele : adj[node]) {
+            if(visited[ele] == -1) {
+                dfs(ele, count);
+            }
+        }
     }
 
     static class Reader {
