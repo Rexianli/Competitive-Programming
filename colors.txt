@@ -1,0 +1,4 @@
+Green = Full Solve
+Yellow = 90%+
+Orange = 70%-89.99%
+Red = Below 70%
