@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class pathprefixes {
+public class Main {
     public static void main(String[] args) throws IOException {
         Reader in = new Reader();
         PrintWriter out = new PrintWriter(System.out);
