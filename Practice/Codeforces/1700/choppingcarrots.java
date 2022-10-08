@@ -1,59 +1,31 @@
 import java.io.*;
-import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.*;
 
-public class meetingontheline {
+public class choppingcarrots {
     public static void main(String[] args) throws IOException {
         Reader in = new Reader();
         PrintWriter out = new PrintWriter(System.out);
         int t = in.nextInt();
-        for(int z = 0; z < t; z++) {
+        while(t-- > 0) {
             int n = in.nextInt();
-            Person[] arr = new Person[n];
+            int k = in.nextInt();
+            int[] arr = new int[n];
             for(int i = 0; i < n; i++) {
-                arr[i] = new Person(in.nextInt(), 0);
+                arr[i] = in.nextInt();
             }
-            for(int i = 0; i < n; i++) {
-                arr[i].t = in.nextInt();
-            }
-            double l = 0, h = Integer.MAX_VALUE;
-            for(int i = 0; i < 200; i++) {
-                double mid = (l + h) / 2;
-                double ml = 0, mh = Integer.MAX_VALUE;
-                for(int j = 0; j < n; j++) {
-                    if(arr[j].t > mid) {
-                        ml = 1;
-                        mh = 0;
-                        break;
-                    } else {
-                        ml = Math.max(ml, arr[j].p - (mid - arr[j].t));
-                        mh = Math.min(mh, arr[j].p + (mid - arr[j].t));
-                    }
+            int answer = Integer.MAX_VALUE;
+            for(int v = 1; v <= arr[0]; v++) {
+                int max = v;
+                for(int i : arr) {
+                    int p = Math.min(k, i / v);
+                    max = Math.max(max, i / p);
                 }
-                if(ml <= mh) {
-                    h = mid;
-                } else {
-                    l = mid;
-                }
+                answer = Math.min(answer, max - v);
             }
-            double ml = 0, mh = Integer.MAX_VALUE;
-            for(int i = 0; i < n; i++) {
-                ml = Math.max(ml, arr[i].p - (h - arr[i].t));
-                mh = Math.min(mh, arr[i].p + (h - arr[i].t));
-            }
-            out.println(ml);
+            out.println(answer);
         }
         in.close();
         out.close();
-    }
-
-    static class Person {
-        int p, t;
-        Person(int p, int t) {
-            this.p = p;
-            this.t = t;
-        }
     }
 
     static class Reader {
